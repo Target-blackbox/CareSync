@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareSync</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" type="image/png" href="{% static 'images/c-logo.png' %}">
+
+
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{% static 'images/c-logo.png' %}" alt="CareSync Logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">View Report</a></li>
+            <li><a href="#">Book Appointment</a></li>
+            <li><a href="#">Login / Register</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-section">
+            <div class="f-logo">
+                <img src="{% static 'images/c-logo.png' %}" alt="CareSync Logo">
+            </div>
+            <p>Your health, your reports, anytime, anywhere.</p>
+            <p>Follow Us:</p>
+            <div class="social-icons">
+                <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            
+        </div>
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li>🏠 <a href="#">Home</a></li>
+                <li>📂 <a href="#">Upload Reports</a></li>
+                <li>👀 <a href="#">View Reports</a></li>
+                <li>📅 <a href="#">Book Appointment</a></li>
+                <li>ℹ️ <a href="#">About Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Support & Social Media</h3>
+            <p>Need Help?</p>
+            <p>📧 Email: support@caresync.com</p>
+            <p>📞 Phone: +91 xxxxxxxxxx</p>
+        </div>
+    </footer>       
+</body>
+</html>
