@@ -1,17 +1,36 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import BaseUserManager
 
-class Patient(models.Model):
-    name = models.CharField(max_length=100)
+class CustomUserManager(BaseUserManager):
+    def create_user(self, username, email, phone, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+        user = self.model(
+            username=username,
+            email=self.normalize_email(email),
+            phone=phone,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, phone, password=None):
+        user = self.create_user(
+            username=username,
+            email=email,
+            phone=phone,
+            password=password,
+        )
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=10, unique=True)
-    password = models.CharField(max_length=255)  # Store hashed password
-    created_at = models.DateTimeField(auto_now_add=True)  # Auto timestamp
-
-    def save(self, *args, **kwargs):
-        # Hash the password before saving
-        self.password = make_password(self.password)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
+    
+    objects = CustomUserManager()
+    
+    REQUIRED_FIELDS = ['email', 'phone']

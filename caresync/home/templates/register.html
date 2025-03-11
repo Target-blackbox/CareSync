@@ -28,10 +28,10 @@
         {% csrf_token %}
 
         <div class="form-group">
-            <label for="{{ form.name.id_for_label }}">Full Name:</label>
-            {{ form.name }}
-            {% if form.name.errors %}
-                <div class="error-message">{{ form.name.errors.0 }}</div>
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="error-message">{{ form.username.errors.0 }}</div>
             {% endif %}
         </div>
 
@@ -52,18 +52,18 @@
         </div>
 
         <div class="form-group">
-            <label for="{{ form.password.id_for_label }}">Password:</label>
-            {{ form.password }}
-            {% if form.password.errors %}
-                <div class="error-message">{{ form.password.errors.0 }}</div>
+            <label for="{{ form.password1.id_for_label }}">Password:</label>
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+                <div class="error-message">{{ form.password1.errors.0 }}</div>
             {% endif %}
         </div>
 
         <div class="form-group">
-            <label for="{{ form.confirm_password.id_for_label }}">Confirm Password:</label>
-            {{ form.confirm_password }}
-            {% if form.confirm_password.errors %}
-                <div class="error-message">{{ form.confirm_password.errors.0 }}</div>
+            <label for="{{ form.password2.id_for_label }}">Confirm Password:</label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+                <div class="error-message">{{ form.password2.errors.0 }}</div>
             {% endif %}
         </div>
 
@@ -75,7 +75,7 @@
 
 <script>
     function clearForm() {
-        document.getElementById("registerForm").reset(); // Reset form fields
+        document.getElementById("registerForm").reset();
     }
 
     document.addEventListener("DOMContentLoaded", function () {

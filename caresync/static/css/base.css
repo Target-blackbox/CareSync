@@ -153,6 +153,16 @@ body {
 
 
 
+/* Profile Page Styles */
+.container {
+    min-height: calc(100vh - 60px - 200px); /* Account for navbar and footer */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a192f 100%);
+}
+
 /* Main Content */
 .content {
     flex: 1;

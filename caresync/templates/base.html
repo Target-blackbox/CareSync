@@ -37,10 +37,11 @@
             <li><a href="#">View Report</a></li>
             <li><a href="#">Book Appointment</a></li>
     
-            {% if request.session.patient_id %}  <!-- Check if the patient is logged in -->
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'profile' %}">Profile</a></li>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             {% else %}
-                <li><a href="{% url 'login' %}">Login / Register</a></li>
+                <li><a href="{% url 'login' %}">Login/Register</a></li>
             {% endif %}
         </ul>
     </nav>
