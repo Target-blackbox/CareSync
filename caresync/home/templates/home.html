@@ -17,11 +17,10 @@
         <p class="home-description">Seamlessly manage your reports, book appointments, and take control of your healthcare with CareSync.</p>
 
         <div class="button-group">
-            <button class="upload-btn">Upload Report</button>
+            <a href="{% url 'reports:folder_list' %}" class="upload-btn">Upload Report</a>
             <button class="book-appointment-btn">Book Appointment</button>
         </div>
     </div>
 </section>
-
 
 {% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    h1 {
+        margin-bottom: 20px;
+    }
+    form p {
+        margin-bottom: 10px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input[type="text"], input[type="file"] {
+        width: 300px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    button[type="submit"] {
+        display: inline-block;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--light-text);
+        background: var(--button-bg);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    button[type="submit"]:hover {
+        background: var(--button-hover);
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 10px;
+    }
+    a {
+        text-decoration: none;
+        margin-right: 10px;
+        color: var(--accent-color);
+    }
+    a:hover {
+        text-decoration: underline;
+        color: var(--hover-color);
+    }
+    a.button {
+        display: inline-block;
+        padding: 12px 20px; /* Copy button styling */
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--light-text);
+        background: var(--button-bg);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    a.button:hover {
+        background: var(--button-hover);
+    }
+</style>
+    <h1>{{ folder.name }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload Report</button>
+    </form>
+    <h2>Reports:</h2>
+    <ul>
+        {% for report in reports %}
+        <li>
+            <a href="{{ report.file.url }}" target="_blank">{{ report.title }}</a>
+            <a href="{% url 'reports:report_delete' report.id %}">Delete</a>
+        </li>
+        {% empty %}
+        <li>No reports in this folder.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'reports:folder_list' %}" class = "button">Back to Folders</a>
+{% endblock %}

@@ -49,6 +49,7 @@
     margin: auto;
     text-align: center;
     padding: 120px;
+    margin-top: 80px;
 }
 
 /* Styling for title and description */
@@ -62,7 +63,7 @@
 .home-description {
     font-family: 'Lato', sans-serif;
     font-size: 20px;
-    color: gray;
+    color: rgb(78, 78, 78);
     margin-bottom: 30px;
 }
 
@@ -84,8 +85,12 @@
     border-radius: 8px;
     cursor: pointer;
     transition: 0.3s;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .upload-btn:hover, .book-appointment-btn:hover {
     background: var(--hover-color);
+    color: var(--light-text);
+    text-decoration: none;
 }

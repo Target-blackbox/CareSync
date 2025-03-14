@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    h1 {
+        margin-bottom: 20px;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 10px;
+    }
+    a {
+        text-decoration: none;
+        margin-right: 10px;
+        color: var(--accent-color); /* Use your base accent color */
+    }
+    a:hover {
+        text-decoration: underline;
+        color: var(--hover-color); /* Use your base hover color */
+    }
+    a.button {
+        display: inline-block;
+        padding: 12px 20px; /* Copy button styling */
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--light-text);
+        background: var(--button-bg);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    a.button:hover {
+        background: var(--button-hover);
+    }
+</style>
+    <h1>My Report Folders</h1>
+    <a href="{% url 'reports:folder_create' %}" class = "button">Create New Folder</a>
+    <ul>
+        {% for folder in folders %}
+        <li>
+            <a href="{% url 'reports:folder_detail' folder.id %}">{{ folder.name }}</a>
+            <a href="{% url 'reports:folder_delete' folder.id %}">Delete</a>
+        </li>
+        {% empty %}
+        <li>No folders yet.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
