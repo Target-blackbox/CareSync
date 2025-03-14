@@ -34,7 +34,7 @@
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="#">About</a></li>
-            <li><a href="#">View Report</a></li>
+            <li><a href="{% url 'reports:folder_list' %}">View Report</a></li>
             <li><a href="#">Book Appointment</a></li>
     
             {% if user.is_authenticated %}
@@ -72,7 +72,7 @@
             <ul>
                 <li>🏠 <a href="{% url 'home' %}">Home</a></li>
                 <li>📂 <a href="#">Upload Reports</a></li>
-                <li>👀 <a href="#">View Reports</a></li>
+                <li>👀 <a href="{% url 'reports:folder_list' %}">View Reports</a></li>
                 <li>📅 <a href="#">Book Appointment</a></li>
                 <li>ℹ️ <a href="#">About Us</a></li>
             </ul>

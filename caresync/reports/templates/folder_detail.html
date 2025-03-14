@@ -1,85 +1,164 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-    h1 {
+    .folder-detail-title {
         margin-bottom: 20px;
     }
-    form p {
-        margin-bottom: 10px;
+
+    .folder-detail-upload-block {
+        margin-bottom: 20px;
+        padding: 20px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    label {
-        display: block;
-        margin-bottom: 5px;
+
+    .folder-detail-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: rgba(255,255,255,0.7);
+        color: #000000;
     }
-    input[type="text"], input[type="file"] {
-        width: 300px;
+
+    .folder-detail-table th, .folder-detail-table td {
+        border: 1px solid #ddd;
         padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        text-align: left;
     }
-    button[type="submit"] {
+
+    .folder-detail-table th {
+        background-color: #f2f2f2;
+    }
+
+    .folder-detail-button {
         display: inline-block;
         padding: 12px 20px;
         font-size: 16px;
         font-weight: bold;
-        color: var(--light-text);
-        background: var(--button-bg);
+        color: #fff;
+        background: #5C7AEA;
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        transition: 0.3s;
+        transition: all 0.3s ease;
+        margin-top: 20px;
     }
-    button[type="submit"]:hover {
-        background: var(--button-hover);
+
+    .folder-detail-button:hover {
+        background: #4A69C6;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-    li {
-        margin-bottom: 10px;
-    }
-    a {
+
+    .folder-detail-link {
         text-decoration: none;
-        margin-right: 10px;
-        color: var(--accent-color);
+        color: #5C7AEA;
+        transition: all 0.3s ease;
     }
-    a:hover {
+
+    .folder-detail-link:hover {
         text-decoration: underline;
-        color: var(--hover-color);
+        color: #4A69C6;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
-    a.button {
-        display: inline-block;
-        padding: 12px 20px; /* Copy button styling */
-        font-size: 16px;
-        font-weight: bold;
-        color: var(--light-text);
-        background: var(--button-bg);
+
+    .folder-detail-input[type="text"], .folder-detail-input[type="file"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .folder-detail-input[type="file"]::file-selector-button {
+        background-color: #5C7AEA;
+        color: white;
+        padding: 10px 15px;
         border: none;
-        border-radius: 8px;
+        border-radius: 4px;
         cursor: pointer;
-        transition: 0.3s;
     }
-    a.button:hover {
-        background: var(--button-hover);
+
+    .folder-detail-input[type="file"]::file-selector-button:hover {
+        background-color: #4A69C6;
+    }
+    .bg-image {
+        position: absolute;
+        width: 37vw;
+        /* Adjusts based on viewport */
+        height: auto;
+        opacity: 0.4;
+        transform-origin: center;
+        z-index: -1;
+    }
+
+    /* Tilted and Positioned at Corners */
+    .bg-image.top-left {
+        top: 1%;
+        left: 0;
+        /* Ensures it stays within screen */
+        transform: rotate(-15deg);
+    }
+
+    .bg-image.top-right {
+        top: -1%;
+        right: 0;
+        /* Keeps it inside the screen */
+        transform: rotate(10deg);
+    }
+
+    .bg-image.bottom-left {
+        bottom: -10%;
+        left: 4%;
+        transform: rotate(12deg);
+    }
+
+    .bg-image.bottom-right {
+        bottom: -10%;
+        right: 0;
+        transform: rotate(-15deg);
     }
 </style>
-    <h1>{{ folder.name }}</h1>
-    <form method="post" enctype="multipart/form-data">
+{% load static %}
+<img src="{% static 'images/g-1.png' %}" class="bg-image top-left" alt="Background 1">
+<img src="{% static 'images/g-2.png' %}" class="bg-image top-right" alt="Background 2">
+<img src="{% static 'images/g-3.png' %}" class="bg-image bottom-left" alt="Background 3">
+<img src="{% static 'images/g-4.png' %}" class="bg-image bottom-right" alt="Background 4">
+
+<h1 class="folder-detail-title">{{ folder.name }}</h1>
+
+<div class="folder-detail-upload-block">
+    <form method="post" enctype="multipart/form-data" class="folder-detail-form">
+        {% csrf_token %}
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Upload Report</button>
+        <button type="submit" class="folder-detail-button">Upload Report</button>
     </form>
-    <h2>Reports:</h2>
-    <ul>
+</div>
+
+<table class="folder-detail-table">
+    <thead>
+        <tr>
+            <th>Report Title</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
         {% for report in reports %}
-        <li>
-            <a href="{{ report.file.url }}" target="_blank">{{ report.title }}</a>
-            <a href="{% url 'reports:report_delete' report.id %}">Delete</a>
-        </li>
+        <tr>
+            <td><a href="{{ report.file.url }}" target="_blank" class="folder-detail-link">{{ report.title }}</a></td>
+            <td>
+                <a href="{% url 'reports:report_delete' report.id %}" class="folder-detail-link">Delete</a>
+            </td>
+        </tr>
         {% empty %}
-        <li>No reports in this folder.</li>
+        <tr>
+            <td colspan="2">No reports in this folder.</td>
+        </tr>
         {% endfor %}
-    </ul>
-    <a href="{% url 'reports:folder_list' %}" class = "button">Back to Folders</a>
+    </tbody>
+</table>
+
+<a href="{% url 'reports:folder_list' %}" class="folder-detail-button">Back to Folders</a>
 {% endblock %}

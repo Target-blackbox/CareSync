@@ -7,7 +7,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 import random
 from django.utils import timezone
-import datetime
+from reports.models import ReportFolder
+
 from django.contrib.auth.decorators import login_required
 
 def home(request):
@@ -141,7 +142,9 @@ def reset_password(request):
 
 @login_required
 def profile(request):
+    folders = ReportFolder.objects.filter(user=request.user)
     context = {
-        'user': request.user
+        'user': request.user,
+        'folders' : folders,
     }
     return render(request, 'profile.html', context)
