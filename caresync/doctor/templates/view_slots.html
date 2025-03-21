@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Doctor Slots</h2>
+<table border="1">
+    <tr>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    {% for slot in slots %}
+    <tr>
+        <td>{{ slot.start_time }}</td>
+        <td>{{ slot.end_time }}</td>
+        <td>{{ slot.status }}</td>
+        <td>
+            {% if slot.status == "available" %}
+                <form method="post" action="{% url 'cancel_slot' slot.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Cancel</button>
+                </form>
+            {% else %}
+                <span>Unavailable</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}

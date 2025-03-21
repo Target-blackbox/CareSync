@@ -94,3 +94,24 @@
     color: var(--light-text);
     text-decoration: none;
 }
+
+.view-appointments-btn {
+    padding: 16px 28px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Lato', sans-serif;
+    color: var(--light-text);
+    background: var(--accent-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.view-appointments-btn:hover {
+    background: var(--hover-color);
+    color: var(--light-text);
+    text-decoration: none;
+}
