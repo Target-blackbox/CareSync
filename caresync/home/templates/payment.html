@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Confirm Payment</h2>
+    <p>Doctor: {{ slot.doctor.user.username }}</p>
+    <p>Slot Time: {{ slot.start_time }}</p>
+    <p>Amount: ₹{{ amount }}</p>
+    
+    <button id="pay-btn">Pay Now</button>
+
+    <script>
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount|floatformat:2 }}" * 100,
+            "currency": "INR",
+            "name": "CareSync",
+            "description": "Doctor Appointment",
+            "order_id": "{{ order_id }}",
+            "handler": function (response) {
+                window.location.href = "/payment-success/?payment_id=" + response.razorpay_payment_id + "&slot_id={{ slot.id }}";
+            }
+        };
+        var rzp = new Razorpay(options);
+        document.getElementById("pay-btn").onclick = function () {
+            rzp.open();
+        };
+    </script>
+</body>
+</html>

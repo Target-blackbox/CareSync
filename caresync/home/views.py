@@ -8,7 +8,8 @@ from django.conf import settings
 import random
 from django.utils import timezone
 from reports.models import ReportFolder
-
+from django.shortcuts import render
+from doctor.models import Doctor, Slot
 from django.contrib.auth.decorators import login_required
 
 def home(request):
@@ -148,3 +149,112 @@ def profile(request):
         'folders' : folders,
     }
     return render(request, 'profile.html', context)
+
+#booking and slots
+from django.shortcuts import render, get_object_or_404, redirect
+from doctor.models import Doctor, Slot
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def book_appointment(request):
+    query = request.GET.get('q', '')  # Get search query from GET request
+    doctors = []
+
+    if query:
+        doctors = Doctor.objects.filter(specialization__icontains=query)  # Search for doctors
+    
+    return render(request, 'book_appointment.html', {'doctors': doctors, 'query': query})
+
+
+@login_required
+def view_doctor_slots(request, doctor_id):
+    doctor = get_object_or_404(Doctor, id=doctor_id)
+    slots = Slot.objects.filter(doctor=doctor.user, status='available')  # Fetch available slots
+    
+    return render(request, 'doctor_slots.html', {'doctor': doctor, 'slots': slots})
+
+
+import razorpay
+from django.conf import settings
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from doctor.models import Slot
+from .models import Booking
+from doctor.models import Doctor
+
+@login_required
+def create_razorpay_order(request, slot_id):
+    slot = get_object_or_404(Slot, id=slot_id, status="available")
+
+    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    
+    amount = 50000  # Example: Rs. 500 (in paise)
+    order_data = {
+        "amount": amount,  
+        "currency": "INR",
+        "payment_capture": "1"
+    }
+    order = client.order.create(data=order_data)
+
+    context = {
+        "slot": slot,
+        "amount": amount / 100,  # Convert to rupees
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+        "order_id": order["id"],
+    }
+    return render(request, "payment.html", context)
+
+
+
+import razorpay
+from django.conf import settings
+from django.shortcuts import get_object_or_404, redirect
+from .models import Booking, Slot
+from django.utils.timezone import now
+
+def payment_success(request):
+    payment_id = request.GET.get('payment_id')
+    slot_id = request.GET.get('slot_id')
+
+    if not payment_id or not slot_id:
+        return redirect('payment_failed')
+
+    # ✅ Initialize Razorpay client
+    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+    try:
+        # ✅ Fetch payment details from Razorpay
+        payment_details = client.payment.fetch(payment_id)
+
+        if payment_details["status"] == "captured":  # ✅ Payment is successful
+            slot = get_object_or_404(Slot, id=slot_id)
+            doctor = get_object_or_404(Doctor, user=slot.doctor)
+            amount = 500  # ✅ Consultation fee
+
+            # ✅ Create a booking record
+            booking = Booking.objects.create(
+                user=request.user,
+                doctor=doctor,
+                slot=slot,
+                amount=amount,
+                payment_id=payment_id,
+                date=slot.start_time.date() if slot.start_time else now().date(),
+                time=slot.start_time.time() if slot.start_time else now().time()
+            )
+
+            # ✅ Mark slot as booked
+            slot.status = 'booked'
+            slot.save()
+
+            return redirect('booking_details')
+        else:
+            return redirect('payment_failed')
+
+    except razorpay.errors.BadRequestError:
+        return redirect('payment_failed')
+
+
+@login_required
+def booking_details(request):
+    bookings = Booking.objects.filter(user=request.user)
+    return render(request, "bookings.html", {"bookings": bookings})

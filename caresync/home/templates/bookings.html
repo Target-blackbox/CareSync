@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Bookings</title>
+</head>
+<body>
+    <h2>My Appointments</h2>
+    <a href="{% url 'book_appointment' %}">Book Appointment</a>
+    <table border="1">
+        <tr>
+            <th>Doctor</th>
+            <th>Slot Time</th>
+            <th>Amount</th>
+            <th>Payment ID</th>
+        </tr>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.doctor.user.username }}</td>
+            <td>{{ booking.slot.start_time }}</td>
+            <td>₹{{ booking.amount }}</td>
+            <td>{{ booking.payment_id }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

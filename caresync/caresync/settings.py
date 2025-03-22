@@ -159,3 +159,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'akhildevreddy207@gmail.com'
 EMAIL_HOST_PASSWORD = 'ijtm zvmc ikvq ylrb'  # Use app password for Gmail
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# In settings.py
+RAZORPAY_KEY_ID = 'rzp_test_qAWE4Q9HbDwDR5'  # Replace with your actual key
+RAZORPAY_KEY_SECRET = '0HQoZ5kfY0M5w4nsSgEG7MmH'  # Replace with your actual secret

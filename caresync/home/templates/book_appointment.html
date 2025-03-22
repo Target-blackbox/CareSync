@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Book an Appointment</h2>
+    
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'book_appointment' %}">
+        <input type="text" name="q" placeholder="Enter disease or specialization" value="{{ query }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Display Search Results -->
+    {% if doctors %}
+
+        <h3>Available Doctors</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Specialization</th>
+                <th>Action</th>
+            </tr>
+            {% for doctor in doctors %}
+            <tr>
+                <td>{{ doctor.user.username }}</td>
+                <td>{{ doctor.specialization }}</td>
+                <td>
+                    <a href="{% url 'view_doctor_slots' doctor.id %}">View Slots</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% elif query %}
+        <p>No doctors found for "{{ query }}".</p>
+    {% endif %}
+{% endblock %}

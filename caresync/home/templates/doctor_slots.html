@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Slots</title>
+</head>
+<body>
+    <h2>Available Slots for Dr. {{ doctor.user.username }}</h2>
+    
+    {% if slots %}
+        <table border="1">
+            <tr>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Book</th>
+            </tr>
+            {% for slot in slots %}
+            <tr>
+                <td>{{ slot.start_time }}</td>
+                <td>{{ slot.end_time }}</td>
+                <td>
+                    <a href="{% url 'book_slot' slot.id %}">Book Now</a>  <!-- This will be linked to booking functionality later -->
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No available slots for this doctor.</p>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'book_appointment' %}">Back to Search</a>
+</body>
+</html>

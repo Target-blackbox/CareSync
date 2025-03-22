@@ -26,10 +26,10 @@
                 {% else %}
                     <!-- Regular users see "Upload Report" and "Book Appointment" -->
                     <a href="{% url 'reports:folder_list' %}" class="upload-btn">Upload Report</a>
-                    <button class="book-appointment-btn">Book Appointment</button>
+                    <a href="{% url 'book_appointment' %}" class="book-appointment-btn">Book Appointment</a>
                 {% endif %}
             {% else %}
-                <p>Please <a href="{% url 'login' %}">log in</a> to access features.</p>
+                <a href="{% url 'login' %}" class="upload-btn">Login/Register</a>
             {% endif %}
         </div>
     </div>

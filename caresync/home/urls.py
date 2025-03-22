@@ -10,4 +10,9 @@ urlpatterns = [
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('reset-password/', views.reset_password, name='reset_password'),
     path('profile/', views.profile, name='profile'),
+    path('book-appointment/', views.book_appointment, name='book_appointment'),
+    path('doctor-slots/<int:doctor_id>/', views.view_doctor_slots, name='view_doctor_slots'),
+    path("book-slot/<int:slot_id>/", views.create_razorpay_order, name="book_slot"),
+    path("payment-success/", views.payment_success, name="payment_success"),
+    path("bookings/", views.booking_details, name="booking_details"),
 ]

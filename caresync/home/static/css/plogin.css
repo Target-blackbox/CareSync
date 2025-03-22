@@ -133,3 +133,15 @@
     right: 0;
     transform: rotate(-15deg);
 }
+
+.upload-btn {
+    margin-top: 15px;
+    font-size: 14px;
+    font-family: 'Lato', sans-serif;
+    color: #374151;
+}
+
+.upload-btn:hover {
+    text-decoration: underline;
+    color: #1E40AF;
+}
