@@ -209,48 +209,60 @@ def create_razorpay_order(request, slot_id):
 import razorpay
 from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect
-from .models import Booking, Slot
 from django.utils.timezone import now
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Booking, Slot
+from doctor.models import Doctor
 
+@login_required
 def payment_success(request):
     payment_id = request.GET.get('payment_id')
     slot_id = request.GET.get('slot_id')
 
     if not payment_id or not slot_id:
+        messages.error(request, "Invalid payment or slot details.")
         return redirect('payment_failed')
 
-    # ✅ Initialize Razorpay client
     client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
     try:
-        # ✅ Fetch payment details from Razorpay
         payment_details = client.payment.fetch(payment_id)
 
-        if payment_details["status"] == "captured":  # ✅ Payment is successful
+        if payment_details["status"] == "captured":  # ✅ Payment was successful
             slot = get_object_or_404(Slot, id=slot_id)
-            doctor = get_object_or_404(Doctor, user=slot.doctor)
-            amount = 500  # ✅ Consultation fee
 
-            # ✅ Create a booking record
+            if slot.status != "available":  
+                messages.error(request, "This slot is already booked.")
+                return redirect('booking_details')
+
+            doctor = get_object_or_404(Doctor, user=slot.doctor)
+            amount = 500  # Example fee
+
+            # ✅ Create Booking & Assign Patient to Slot
             booking = Booking.objects.create(
                 user=request.user,
                 doctor=doctor,
-                slot=slot,
+                slot=slot,  # Link slot to patient
                 amount=amount,
                 payment_id=payment_id,
-                date=slot.start_time.date() if slot.start_time else now().date(),
-                time=slot.start_time.time() if slot.start_time else now().time()
+                date=slot.start_time.date(),
+                time=slot.start_time.time()
             )
 
-            # ✅ Mark slot as booked
+            # ✅ Mark Slot as Booked
             slot.status = 'booked'
             slot.save()
 
+            messages.success(request, "Appointment booked successfully! Your slot is confirmed.")
             return redirect('booking_details')
+
         else:
+            messages.error(request, "Payment failed. Please try again.")
             return redirect('payment_failed')
 
     except razorpay.errors.BadRequestError:
+        messages.error(request, "Payment verification failed.")
         return redirect('payment_failed')
 
 

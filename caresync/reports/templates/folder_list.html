@@ -96,7 +96,8 @@
 <img src="{% static 'images/g-4.png' %}" class="bg-image bottom-right" alt="Background 4">
 
 <h1 class="folder-list-title">My Report Folders</h1>
-<a href="{% url 'reports:folder_create' %}" class="folder-list-create-button">Create New Folder</a>
+<a href="{% url 'reports:user_dashboard' %}" class="folder-list-create-button">Health Dashboard</a>
+<a href="{% url 'reports:folder_create' %}" class="folder-list-create-button" style="margin-top: 25px;">Create New Folder</a>
 <table class="folder-list-table">
     <thead>
         <tr>

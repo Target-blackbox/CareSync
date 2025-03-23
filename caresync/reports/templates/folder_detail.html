@@ -62,75 +62,12 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
-
-    .folder-detail-input[type="text"], .folder-detail-input[type="file"] {
-        width: calc(100% - 20px);
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    .folder-detail-input[type="file"]::file-selector-button {
-        background-color: #5C7AEA;
-        color: white;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .folder-detail-input[type="file"]::file-selector-button:hover {
-        background-color: #4A69C6;
-    }
-    .bg-image {
-        position: absolute;
-        width: 37vw;
-        /* Adjusts based on viewport */
-        height: auto;
-        opacity: 0.4;
-        transform-origin: center;
-        z-index: -1;
-    }
-
-    /* Tilted and Positioned at Corners */
-    .bg-image.top-left {
-        top: 1%;
-        left: 0;
-        /* Ensures it stays within screen */
-        transform: rotate(-15deg);
-    }
-
-    .bg-image.top-right {
-        top: -1%;
-        right: 0;
-        /* Keeps it inside the screen */
-        transform: rotate(10deg);
-    }
-
-    .bg-image.bottom-left {
-        bottom: -10%;
-        left: 4%;
-        transform: rotate(12deg);
-    }
-
-    .bg-image.bottom-right {
-        bottom: -10%;
-        right: 0;
-        transform: rotate(-15deg);
-    }
 </style>
-{% load static %}
-<img src="{% static 'images/g-1.png' %}" class="bg-image top-left" alt="Background 1">
-<img src="{% static 'images/g-2.png' %}" class="bg-image top-right" alt="Background 2">
-<img src="{% static 'images/g-3.png' %}" class="bg-image bottom-left" alt="Background 3">
-<img src="{% static 'images/g-4.png' %}" class="bg-image bottom-right" alt="Background 4">
 
 <h1 class="folder-detail-title">{{ folder.name }}</h1>
 
 <div class="folder-detail-upload-block">
     <form method="post" enctype="multipart/form-data" class="folder-detail-form">
-        {% csrf_token %}
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="folder-detail-button">Upload Report</button>
@@ -149,6 +86,7 @@
         <tr>
             <td><a href="{{ report.file.url }}" target="_blank" class="folder-detail-link">{{ report.title }}</a></td>
             <td>
+                <a href="{% url 'reports:report_analysis' report.id %}" class="folder-detail-link">Analysis</a>|
                 <a href="{% url 'reports:report_delete' report.id %}" class="folder-detail-link">Delete</a>
             </td>
         </tr>

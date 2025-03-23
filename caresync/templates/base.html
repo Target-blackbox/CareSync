@@ -41,7 +41,10 @@
                 <li><a href="#">View Appointments</a></li>
             {% else %}
                 <li><a href="{% url 'reports:folder_list' %}">View Report</a></li>
-                <li><a href="#">Book Appointment</a></li>
+                <li><a href="{% url 'book_appointment' %}">Book Appointment</a></li>
+                <li><a href="{% url 'booking_details' %}">My Bookings</a></li>
+                
+                
             {% endif %}
             <li><a href="{% url 'profile' %}">Profile</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>

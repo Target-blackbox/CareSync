@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<style>
+/* Container Styling */
+.appointments-container {
+    background: rgba(255, 255, 255, 0.8);
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 50px;
+    backdrop-filter: blur(8px); /* Adds a soft blur effect */
+    margin-top: 120px;
+}
+
+/* Heading */
+.appointments-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Filter Form */
+.appointment-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    background: rgba(240, 240, 240, 0.6);
+}
+
+.appointment-filters label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.appointment-filters input {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.appointment-filters button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.appointment-filters button:hover {
+    background-color: #0056b3;
+}
+
+/* Table Styling */
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.appointments-table th, 
+.appointments-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+.appointments-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.appointments-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.appointments-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Slot Status */
+.slot-status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.slot-finished {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.slot-upcoming {
+    background-color: #28a745;
+    color: white;
+}
+
+    .bg-image {
+        position: absolute;
+        width: 37vw;
+        /* Adjusts based on viewport */
+        height: auto;
+        opacity: 0.4;
+        transform-origin: center;
+        z-index: -1;
+    }
+
+    /* Tilted and Positioned at Corners */
+    .bg-image.top-left {
+        top: 1%;
+        left: 0;
+        /* Ensures it stays within screen */
+        transform: rotate(-15deg);
+    }
+
+    .bg-image.top-right {
+        top: -1%;
+        right: 0;
+        /* Keeps it inside the screen */
+        transform: rotate(10deg);
+    }
+
+    .bg-image.bottom-left {
+        bottom: -30%;
+        left: 0;
+        transform: rotate(12deg);
+    }
+
+    .bg-image.bottom-right {
+        bottom: -30%;
+        right: 0;
+        transform: rotate(-15deg);
+    }
+  
+
+
+
+</style>
+<img src="{% static 'images/g-1.png' %}" class="bg-image top-left" alt="Background 1">
+<img src="{% static 'images/g-2.png' %}" class="bg-image top-right" alt="Background 2">
+<img src="{% static 'images/g-3.png' %}" class="bg-image bottom-left" alt="Background 3">
+<img src="{% static 'images/g-4.png' %}" class="bg-image bottom-right" alt="Background 4">
+
+<div class="appointments-container">
+    <h2>Your Appointments</h2>
+
+    <form method="GET" action="" class="appointment-filters">
+        <label>Patient Name:</label>
+        <input type="text" name="patient_name" value="{{ request.GET.patient_name }}">
+
+        <label>Date:</label>
+        <input type="date" name="date" value="{{ request.GET.date }}">
+
+        <label>Time Slot:</label>
+        <input type="time" name="slot_time" value="{{ request.GET.slot_time }}">
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <table class="appointments-table">
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Appointment Date</th>
+                <th>Time Slot</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.user.username }}</td>
+                <td>{{ booking.date }}</td>
+                <td>{{ booking.formatted_time }}</td>
+                <td>
+                    {% if booking.is_finished %}
+                        <span class="slot-status slot-finished">Slot Finished</span>
+                    {% else %}
+                        <span class="slot-status slot-upcoming">Upcoming</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

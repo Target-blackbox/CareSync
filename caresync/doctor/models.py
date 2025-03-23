@@ -34,6 +34,7 @@ class Slot(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='available')
+    booked_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="booked_slots")
     
     def __str__(self):
         return f"{self.doctor.username} | {self.start_time} - {self.end_time} | {self.status}"

@@ -21,7 +21,7 @@
             {% if request.user.is_authenticated %}
                 {% if request.user.doctor %}
                     <!-- Doctor sees "View Appointments" -->
-                    <a href="#" class="view-appointments-btn">View Appointments</a>
+                    <a href="{% url 'view_appointments' %}" class="upload-btn">View Appointments</a>
                     <a href="{% url 'generate_slots' %}" class="upload-btn">Create Slots</a>
                 {% else %}
                     <!-- Regular users see "Upload Report" and "Book Appointment" -->

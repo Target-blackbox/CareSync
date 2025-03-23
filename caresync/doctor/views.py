@@ -140,4 +140,59 @@ def cancel_slot(request, slot_id):
         print(f"Slot {slot_id} not found or unauthorized.")
     
     return redirect('/doctor/view_slots/')
+import pytz
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from home.models import Booking
+from django.utils.timezone import now,localtime
 
+import pytz
+from datetime import datetime
+from django.utils.timezone import localtime, now
+
+def view_appointments(request): 
+    if not hasattr(request.user, 'doctor'):
+        return redirect('home')
+
+    doctor_instance = request.user.doctor  # ✅ Get the Doctor instance
+    bookings = Booking.objects.filter(doctor=doctor_instance)  # ✅ Now it matches the ForeignKey
+
+    current_datetime = localtime(now())  # Get current time in local timezone
+
+    # Filters
+    patient_name = request.GET.get('patient_name', '')
+    date = request.GET.get('date', '')
+    slot_time = request.GET.get('slot_time', '')
+
+    if patient_name:
+        bookings = bookings.filter(user__username__icontains=patient_name)
+
+    if date:
+        try:
+            formatted_date = datetime.strptime(date, "%Y-%m-%d").date()
+            bookings = bookings.filter(date=formatted_date)
+        except ValueError:
+            pass  # Ignore invalid date formats
+
+    if slot_time:
+        bookings = bookings.filter(time=slot_time)
+
+    # Convert times to IST and check if slot is finished
+    ist = pytz.timezone("Asia/Kolkata")
+    for booking in bookings:
+        # ✅ Combine `date` and `time` into a single datetime object
+        booking_datetime = datetime.combine(booking.date, booking.time)
+
+        # ✅ Assign UTC timezone first, then convert to IST
+        booking_datetime = booking_datetime.replace(tzinfo=pytz.utc).astimezone(ist)
+
+        # ✅ Store formatted time for the template
+        booking.formatted_time = booking_datetime.strftime("%I:%M %p")  # Format as HH:MM AM/PM
+
+        # ✅ Determine if the slot is finished
+        booking.is_finished = booking_datetime < current_datetime
+
+    return render(request, 'view_appointment.html', {
+        'bookings': bookings,
+        'current_datetime': current_datetime,
+    })
