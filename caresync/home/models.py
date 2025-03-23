@@ -54,3 +54,5 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.user.username} booked {self.doctor.user.username} at {self.slot.start_time}"
+
+

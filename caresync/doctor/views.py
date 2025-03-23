@@ -144,12 +144,11 @@ import pytz
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from home.models import Booking
-from django.utils.timezone import now,localtime
+from django.utils.timezone import now, localtime
 
-import pytz
 from datetime import datetime
-from django.utils.timezone import localtime, now
 
+@login_required
 def view_appointments(request): 
     if not hasattr(request.user, 'doctor'):
         return redirect('home')
@@ -196,3 +195,99 @@ def view_appointments(request):
         'bookings': bookings,
         'current_datetime': current_datetime,
     })
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from reports.models import ReportFolder, Report
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+@login_required
+def doctor_view_patient_folders(request, patient_id):
+    # Check if the user is a doctor
+    if not hasattr(request.user, 'doctor'):
+        return redirect('home')
+    
+    # Get the patient
+    patient = get_object_or_404(User, id=patient_id)
+    
+    # Check if this doctor has an appointment with this patient
+    # This security check ensures doctors can only view folders of their patients
+    doctor_instance = request.user.doctor
+    has_appointment = Booking.objects.filter(
+        doctor=doctor_instance, 
+        user=patient
+    ).exists()
+    
+    if not has_appointment:
+        messages.error(request, "You don't have permission to view this patient's records.")
+        return redirect('view_appointments')
+    
+    # Get all folders for this patient
+    folders = ReportFolder.objects.filter(user=patient)
+    
+    return render(request, 'doctor_patient_folders.html', {
+        'patient': patient,
+        'folders': folders
+    })
+
+
+@login_required
+def doctor_view_folder_reports(request, folder_id):
+    # Check if the user is a doctor
+    if not hasattr(request.user, 'doctor'):
+        return redirect('home')
+    
+    # Get the folder
+    folder = get_object_or_404(ReportFolder, id=folder_id)
+    patient = folder.user
+    
+    # Security check: Verify doctor has appointment with this patient
+    doctor_instance = request.user.doctor
+    has_appointment = Booking.objects.filter(
+        doctor=doctor_instance, 
+        user=patient
+    ).exists()
+    
+    if not has_appointment:
+        messages.error(request, "You don't have permission to view these reports.")
+        return redirect('view_appointments')
+    
+    # Get reports in this folder
+    reports = Report.objects.filter(folder=folder)
+    
+    return render(request, 'doctor_folder_reports.html', {
+        'folder': folder,
+        'patient': patient,
+        'reports': reports
+    })
+
+@login_required
+def doctor_view_report_analysis(request, report_id):
+    # Check if the user is a doctor
+    if not hasattr(request.user, 'doctor'):
+        return redirect('home')
+    
+    # Get the report
+    report = get_object_or_404(Report, id=report_id)
+    patient = report.user
+    
+    # Security check: Verify doctor has appointment with this patient
+    doctor_instance = request.user.doctor
+    has_appointment = Booking.objects.filter(
+        doctor=doctor_instance, 
+        user=patient
+    ).exists()
+    
+    if not has_appointment:
+        messages.error(request, "You don't have permission to view this analysis.")
+        return redirect('view_appointments')
+    
+    return render(request, 'doctor_report_analysis.html', {
+        'report': report,
+        'patient': patient,
+        'analysis_data': report.analysis_data
+    })
+

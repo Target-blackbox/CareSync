@@ -38,3 +38,5 @@ class Slot(models.Model):
     
     def __str__(self):
         return f"{self.doctor.username} | {self.start_time} - {self.end_time} | {self.status}"
+
+

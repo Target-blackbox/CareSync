@@ -270,3 +270,5 @@ def payment_success(request):
 def booking_details(request):
     bookings = Booking.objects.filter(user=request.user)
     return render(request, "bookings.html", {"bookings": bookings})
+
+
